@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استعلام مدارک | کیفیت اندیشان صنعت</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        
+        /* هدر نارنجی */
+        .header {
+            background: #ff5c00;
+            padding: 30px 20px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        /* باکس جستجو */
+        .search-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-bottom: 1px solid #e9ecef;
+            width: 100%;
+        }
+        
+        .search-box h3 {
+            text-align: center;
+            color: #495057;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        /* فرم جستجو */
+        .search-form {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            direction: rtl;
+        }
+        
+        .search-form input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+            text-align: right;
+        }
+        
+        .search-form input:focus {
+            outline: none;
+            border-color: #ff5c00;
+        }
+        
+        .search-form button {
+            background: #ff5c00;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        
+        .search-form button:hover {
+            background: #e65300;
+        }
+        
+        /* راهنما */
+        .hint-text {
+            text-align: center;
+            margin-top: 15px;
+            color: #6c757d;
+            font-size: 12px;
+            direction: rtl;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        .hint-text span {
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #ff5c00;
+            font-family: monospace;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        
+        /* پیام خطا */
+        .error-message {
+            text-align: center;
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            direction: rtl;
+        }
+        
+        /* نتیجه جستجو */
+        .result {
+            padding: 30px;
+            display: none;
+            width: 100%;
+        }
+        
+        .result.show {
+            display: block;
+        }
+        
+        /* کارت مدرک */
+        .cert-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        
+        .cert-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f3f5;
+            margin-bottom: 25px;
+        }
+        
+        .cert-header h2 {
+            color: #212529;
+            font-size: 22px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        .cert-header p {
+            color: #6c757d;
+            font-size: 14px;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        /* گرید اطلاعات */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .info-item .label {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        .info-item .value {
+            color: #212529;
+            font-size: 20px;
+            font-weight: bold;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        /* نشان اعتبار */
+        .valid-badge {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .valid-badge span {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        .valid-badge .valid {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .valid-badge .invalid {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* فوتر کارت */
+        .cert-footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #e9ecef;
+            text-align: center;
+        }
+        
+        .cert-footer p {
+            color: #6c757d;
+            font-size: 14px;
+            margin: 5px 0;
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        .cert-footer .orange-text {
+            color: #ff5c00;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        
+        /* پیدا نشد */
+        .not-found {
+            text-align: center;
+            padding: 40px;
+            color: #721c24;
+            background: #f8d7da;
+            border-radius: 10px;
+            display: none;
+            margin: 30px;
+        }
+        
+        .not-found.show {
+            display: block;
+        }
+        
+        .not-found h3 {
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+            margin-bottom: 10px;
+        }
+        
+        .not-found p {
+            font-family: 'IRANSansX', 'IRANSans', 'Vazir', 'Tahoma', sans-serif;
+        }
+        
+        /* لودینگ */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .loading::after {
+            content: "";
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff5c00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- هدر -->
+        <div class="header">
+            <h1>سامانه استعلام مدارک</h1>
+        </div>
+        
+        <!-- باکس جستجو -->
+        <div class="search-box">
+            <h3>کد مدرک خود را وارد کنید</h3>
+            
+            <div class="search-form">
+                <input type="text" id="certificateCode" placeholder="مثال: KAS-VT250501001" maxlength="15">
+                <button onclick="searchCertificate()">جستجو</button>
+            </div>
+            
+            <div id="errorMessage" class="error-message"></div>
+            
+            <div class="hint-text">
+                کد مدرک ۱۵ کاراکتر است • نمونه: <span>KAS-VT240101000</span>
+            </div>
+        </div>
+        
+        <!-- لودینگ -->
+        <div id="loading" class="loading"></div>
+        
+        <!-- نتیجه -->
+        <div id="result" class="result"></div>
+        
+        <!-- پیدا نشد -->
+        <div id="notFound" class="not-found">
+            <h3>❌ مدرکی با این کد یافت نشد</h3>
+            <p>لطفاً از صحت کد وارد شده اطمینان حاصل کنید</p>
+        </div>
+    </div>
+
+    <script>
+        // دیتابیس مدارک
+        const certificatesDB = {
+            "KAS-VT250501001": {
+                fullName: "Amirabbas Amirijoo",
+                courseName: "وبینار تخصصی ایزو 9001",
+                courseHours: 2,
+                startDate: "1404-03-10",
+                endDate: "1404-03-10",
+                issueDate: "1404-03-10",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT250501001"
+            },
+            "KAS-VT250501002": {
+                fullName: "Hossein Heydari",
+                courseName: "وبینار تخصصی ایزو 9001",
+                courseHours: 2,
+                startDate: "1404-03-10",
+                endDate: "1404-03-10",
+                issueDate: "1404-03-10",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT250501002"
+            },
+            "KAS-VT250501003": {
+                fullName: "Zahra Kordloo",
+                courseName: "وبینار تخصصی ایزو 9001",
+                courseHours: 2,
+                startDate: "1404-03-10",
+                endDate: "1404-03-10",
+                issueDate: "1404-03-10",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT250501003"
+            },
+            "KAS-VT250501004": {
+                fullName: "Samane Eftetahi",
+                courseName: "وبینار تخصصی ایزو 9001",
+                courseHours: 2,
+                startDate: "1404-03-10",
+                endDate: "1404-03-10",
+                issueDate: "1404-03-10",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT250501004"
+            },
+            "KAS-VT250501005": {
+                fullName: "Aidin Rami",
+                courseName: "وبینار تخصصی ایزو 9001",
+                courseHours: 2,
+                startDate: "1404-03-10",
+                endDate: "1404-03-10",
+                issueDate: "1404-03-10",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT250501005"
+            },
+            "KAS-VT200702001": {
+                fullName: "Hamid Yarahmadi",
+                courseName: "وبینار مهندسی سیستم های سازمانی",
+                courseHours: 2,
+                startDate: "1404-04-18",
+                endDate: "1404-04-18",
+                issueDate: "1404-04-18",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT200702001"
+            },
+            "KAS-VT250807001": {
+                fullName: "Aref Ayati",
+                courseName: "وبینار تخصصی ایزو 9001",
+                courseHours: 2,
+                startDate: "1404-05-13",
+                endDate: "1404-05-13",
+                issueDate: "1404-05-13",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT250807001"
+            },
+            "KAS-VT250909001": {
+                fullName: "Ali Rezazadeh",
+                courseName: "وبینار دیسک در یک نگاه: ابزار سریع ارتباط موفق مؤثر",
+                courseHours: 2,
+                startDate: "1404-06-11",
+                endDate: "1404-06-11",
+                issueDate: "1404-06-11",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT250909001"
+            },
+            "KAS-VT250909002": {
+                fullName: "Robab Hasanebrahimi",
+                courseName: "وبینار دیسک در یک نگاه: ابزار سریع ارتباط موفق مؤثر",
+                courseHours: 2,
+                startDate: "1404-06-11",
+                endDate: "1404-06-11",
+                issueDate: "1404-06-11",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT250909002"
+            },
+            "KAS-VT250910001": {
+                fullName: "Hamidreza Joshaghani",
+                courseName: "وبینار مهندسی سیستم های سازمانی: منابع انسانی",
+                courseHours: 2,
+                startDate: "1404-06-11",
+                endDate: "1404-06-11",
+                issueDate: "1404-06-11",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT250910001"
+            },
+            "KAS-VT251012001": {
+                fullName: "Maryam Orouji",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012001"
+            },
+            "KAS-VT251012002": {
+                fullName: "Zahra Hosseini",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012002"
+            },
+            "KAS-VT251012003": {
+                fullName: "Amir Hossein Jedinia",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012003"
+            },
+            "KAS-VT251012004": {
+                fullName: "Farzaneh Reisizade",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012004"
+            },
+            "KAS-VT251012005": {
+                fullName: "Farzaneh Zirak",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012005"
+            },
+            "KAS-VT251012006": {
+                fullName: "Hamed Hosseini",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012006"
+            },
+            "KAS-VT251012007": {
+                fullName: "Mahmoud Ghasemian",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012007"
+            },
+            "KAS-VT251012008": {
+                fullName: "Yaser Akbarnia",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012008"
+            },
+            "KAS-VT251012009": {
+                fullName: "Nikan Bagheri",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012009"
+            },
+            "KAS-VT251012010": {
+                fullName: "Mahnaz Hashemi",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012010"
+            },
+            "KAS-VT251012011": {
+                fullName: "Mehdi Sagharizadeh",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012011"
+            },
+            "KAS-VT251012012": {
+                fullName: "Fatemeh Zahra Hojat Eleslami",
+                courseName: "وبینار تخصصی تغییرات ایزو 9001:2025 - آپدیت جدید",
+                courseHours: 2,
+                startDate: "1404-08-05",
+                endDate: "1404-08-05",
+                issueDate: "1404-08-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251012012"
+            },
+            "KAS-CT250713001": {
+                fullName: "Aidin Rami",
+                courseName: "دوره کامل دیسک تحلیل تیپ های شخصیتی تست شخصیت شناسی دیسک",
+                courseHours: 12,
+                startDate: "1404-04-16",
+                endDate: "1404-04-23",
+                issueDate: "1404-04-23",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-CT250713001"
+            },
+            "KAS-CT250713002": {
+                fullName: "Neda Eftekhar",
+                courseName: "دوره کامل دیسک تحلیل تیپ های شخصیتی تست شخصیت شناسی دیسک",
+                courseHours: 12,
+                startDate: "1404-04-16",
+                endDate: "1404-04-23",
+                issueDate: "1404-04-23",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-CT250713002"
+            },
+            "KAS-CT251214001": {
+                fullName: "Aidin Rami",
+                courseName: "کارگاه تعالی اهداف فردی با رویکرد کوچینگ و منتورینگ",
+                courseHours: 12,
+                startDate: "1404-07-10",
+                endDate: "1404-08-11",
+                issueDate: "1404-08-11",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-CT251214001"
+            },
+            "KAS-CT251214002": {
+                fullName: "Neda Eftekhar",
+                courseName: "کارگاه تعالی اهداف فردی با رویکرد کوچینگ و منتورینگ",
+                courseHours: 12,
+                startDate: "1404-07-10",
+                endDate: "1404-08-11",
+                issueDate: "1404-08-11",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-CT251214002"
+            },
+            "KAS-VT260114001": {
+                fullName: "Zahra Khosravi",
+                courseName: "دوره مدیریت شرایط اضطرار",
+                courseHours: 12,
+                startDate: "1404-10-05",
+                endDate: "1404-10-15",
+                issueDate: "1404-10-25",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT260114001"
+            },
+            "KAS-VT251215006": {
+                fullName: "Zahra Khosravi",
+                courseName: "HSE - Risk Management",
+                courseHours: 12,
+                startDate: "1404-10-04",
+                endDate: "1404-10-05",
+                issueDate: "1404-10-05",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT251215006"
+            },
+            "KAS-VT260116013": {
+                fullName: "Zahra Khosravi",
+                courseName: "دوره الزامات و مستندسازی سیستم مدیریت HSE (HSE-MS)",
+                courseHours: 12,
+                startDate: "1404-11-02",
+                endDate: "1404-11-03",
+                issueDate: "1404-11-03",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT260116013"
+            },
+            "KAS-VT260117021": {
+                fullName: "Zahra Khosravi",
+                courseName: "دوره تخصصی بهداشت حرفه‌ای و ارگونومی",
+                courseHours: 12,
+                startDate: "1404-11-09",
+                endDate: "1404-11-10",
+                issueDate: "1404-11-10",
+                isValid: true,
+                grade: "عالی",
+                certificateCode: "KAS-VT260117021"
+            }
+        };
+
+        function searchCertificate() {
+            const code = document.getElementById('certificateCode').value.trim();
+            const errorDiv = document.getElementById('errorMessage');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const notFound = document.getElementById('notFound');
+            
+            errorDiv.innerHTML = '';
+            
+            if (!code) {
+                errorDiv.innerHTML = 'لطفاً کد مدرک را وارد کنید';
+                return;
+            }
+            
+            if (code.length !== 15) {
+                errorDiv.innerHTML = 'کد مدرک باید دقیقاً ۱۵ کاراکتر باشد';
+                return;
+            }
+            
+            loading.classList.add('show');
+            result.classList.remove('show');
+            notFound.classList.remove('show');
+            
+            setTimeout(() => {
+                loading.classList.remove('show');
+                
+                const cert = certificatesDB[code];
+                
+                if (cert) {
+                    displayResult(cert);
+                } else {
+                    notFound.classList.add('show');
+                }
+            }, 1000);
+        }
+
+        function displayResult(cert) {
+            const resultDiv = document.getElementById('result');
+            const notFound = document.getElementById('notFound');
+            
+            notFound.classList.remove('show');
+            
+            const validClass = cert.isValid ? 'valid' : 'invalid';
+            const validText = cert.isValid ? '✅ معتبر' : '❌ منقضی شده';
+            
+            resultDiv.innerHTML = `
+                <div class="cert-card">
+                    <div class="cert-header">
+                        <h2>${cert.fullName}</h2>
+                        <p>کد مدرک: ${cert.certificateCode}</p>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="label">دوره آموزشی</div>
+                            <div class="value">${cert.courseName}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">مدت دوره</div>
+                            <div class="value">${cert.courseHours} ساعت</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">تاریخ شروع</div>
+                            <div class="value">${cert.startDate}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">تاریخ پایان</div>
+                            <div class="value">${cert.endDate}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">تاریخ صدور</div>
+                            <div class="value">${cert.issueDate}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">معدل/نمره</div>
+                            <div class="value">${cert.grade}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="valid-badge">
+                        <span class="${validClass}">${validText}</span>
+                    </div>
+                    
+                    <div class="cert-footer">
+                        <p class="orange-text">این مدرک توسط شرکت کیفیت اندیشان صنعت صادر شده است</p>
+                        <p>گواهی نامه دارای اعتبار می‌باشد.</p>
+                    </div>
+                </div>
+            `;
+            
+            resultDiv.classList.add('show');
+        }
+
+        document.getElementById('certificateCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCertificate();
+            }
+        });
+
+        document.getElementById('certificateCode').addEventListener('input', function(e) {
+            if (this.value.length > 15) {
+                this.value = this.value.slice(0, 15);
+            }
+        });
+
+        window.onload = function() {
+            document.getElementById('certificateCode').value = 'KAS-VT250501001';
+        };
+    </script>
+</body>
+</html>
